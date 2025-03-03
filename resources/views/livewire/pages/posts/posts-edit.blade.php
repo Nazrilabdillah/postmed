@@ -1,4 +1,4 @@
-<div class="text-white mt-5 w-full flex flex-col h-screen justify-center items-center text-center bg-slate-900">
+<div class="flex flex-col  text-white mt-5 w-full h-screen justify-center items-center text-center bg-slate-900">
     <div class="flex flex-col gap-3 w-3/4 bg-slate-800 p-5">
 
 
@@ -33,16 +33,19 @@
                 <label for="image" class="block text-sm font-medium">Upload Gambar</label>
                 <input type="file"
                     class="w-full p-2 border rounded focus:outline-none focus:ring focus:ring-blue-500 @error('image') border-red-500 @enderror"
-                    wire:model="image">
+                    wire:model="imageModel">
                 @error('image')
                     <div class="text-red-500 text-sm">{{ $message }}</div>
                 @enderror
             </div>
 
 
-            @if ($this->image)
-                <p>Preview: {{ $image }}</p>
-                {{-- <img src="{{ $image->temporaryUrl() }}" width="200" class="mb-3"> --}}
+            @if ($this->imageModel)
+                <p>Preview:</p>
+                <img src="{{ $imageModel->temporaryUrl() }}" width="200" class="mb-3 items-center">
+            @else
+                <p>Preview:</p>
+                <img src="{{ asset('storage/' . $image) }}" width="200" class="mb-3 items-center">
             @endif
 
             <button type="submit"

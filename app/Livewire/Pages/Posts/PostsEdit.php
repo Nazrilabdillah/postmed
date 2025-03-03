@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\Attributes\Url;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 
 class PostsEdit extends Component
@@ -15,9 +16,10 @@ class PostsEdit extends Component
     #[Url()]
     public  $post_id;
     public Posts $post;
-    public $image ="";
+    public $image;
     public $title ="";
     public $tags ="";
+    public $imageModel;
     public function mount(){
         $this->post = Posts::find($this->post_id);
         $this->title = $this->post->title;
@@ -31,15 +33,17 @@ class PostsEdit extends Component
         $this->validate([
             'title' => 'required|string|max:255',
             'tags' => 'required|string',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
+            'imageModel' => 'required|image|mimes:jpg,jpeg,png|max:2048'
         ]);
        
         // Simpan gambar ke storage
-        // $imagePath = $this->image->store('posts', 'public');
-          $imagePath = "jajs";
+        $imagePath = $this->post->img_path;
+        if($this->imageModel){
+            Storage::disk('public')->delete($this->image);
+            $imagePath = $this->imageModel->store('assets/image/posts', 'public');
+         }
         // Simpan data ke database
-        Posts::create([
-            'user_id' => Auth::user()->id,
+        $this->post->update([
             'title' => $this->title,
             'tag' => $this->tags,
             'img_path' => $imagePath
@@ -49,7 +53,7 @@ class PostsEdit extends Component
         $this->reset(['title', 'tags', 'image']);
 
         session()->flash('success', 'Post berhasil ditambahkan!');
-         $this->redirect(route('welcome', absolute: false), navigate: true);
+        // $this->dispatch('refreshPosts')->to()
     }
 
     

@@ -9,7 +9,7 @@ use App\Models\Posts;
 class PostsCreate extends Component
 {
     use WithFileUploads;
-    public $image ="";
+    public $image;
     public $title ="";
     public $tags ="";
     
@@ -22,8 +22,7 @@ class PostsCreate extends Component
         ]);
        
         // Simpan gambar ke storage
-        // $imagePath = $this->image->store('posts', 'public');
-          $imagePath = "jajs";
+        $imagePath = $this->image->store('assets/image/posts', 'public');
         // Simpan data ke database
         Posts::create([
             'user_id' => Auth::user()->id,
